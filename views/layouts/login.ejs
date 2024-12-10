@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <%- include("../partials/head") %>
+  <body>
+    <%- include("../partials/header") %>
+    <div class="form-container">
+      <h3>Logowanie</h3>
+      <form action="/auth/login" method="post" class="form">
+        <input
+          type="text"
+          name="login"
+          placeholder="Nazwa użytkownika"
+          required
+        />
+        <input type="password" name="password" placeholder="Hasło" required />
+        <button type="submit">ZALOGUJ SIĘ</button>
+      </form>
+    </div>
+
+    <div class="form-container">
+      <h3>Rejestracja</h3>
+      <form action="/auth/register" method="post" class="form">
+        <input
+          type="text"
+          name="login"
+          placeholder="Nazwa użytkownika"
+          required
+        />
+        <input type="password" name="password" placeholder="Hasło" required />
+        <input
+          type="password"
+          name="passwordConf"
+          placeholder="Powtórz hasło"
+          required
+        />
+        <input type="email" name="email" placeholder="Adres e-mail" required />
+        <button type="submit">ZAREJESTRUJ SIĘ</button>
+      </form>
+    </div>
+    <%- include("../partials/footer") %>
+  </body>
+</html>

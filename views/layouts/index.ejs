@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= locals.title %></title>
+    <link rel="icon" href="./images/icon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,500;1,14..32,500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+          <a href="/main" class="no-underline">
+            <img id="logo" src="/images/library.png" alt="logo" />
+            Księgarnia
+            <span class="letter-white">L</span>
+            <span class="letter-white">i</span>
+            <span class="letter-blueviolet">b</span>
+            <span class="letter-blueviolet">r</span>
+            <span class="letter-blueviolet">a</span>
+            <span class="letter-blueviolet">n</span>
+          </a>
+        </h1>
+        <div class="dropdown-bar">
+          <ul>
+            <li class="dropdown">
+              <a href="#">Książki <b>▸</b></a>
+              <div class="dropdown-content">
+                <a href="#">Fantastyka</a>
+                <a href="#">Historia</a>
+                <a href="#">Kryminał</a>
+                <a href="#">Religia</a>
+              </div>
+            </li>
+            <li class="dropdown">
+              <a href="#">Podręczniki <b>▸</b></a>
+              <div class="dropdown-content">
+                <a href="#">Szkoła podstawowa</a>
+                <a href="#">Technikum/Liceum</a>
+                <a href="#">Matura</a>
+              </div>
+            </li>
+            <li class="dropdown"><a href="#">Outlet</a></li>
+            <li class="searchBtn">
+              <button aria-expanded="false">
+                <span id="searchTxt">Szukaj</span>
+                <!-- Napis "Szukaj" ukryty, ale pojawi się na hover -->
+                <svg
+                  fill="#ffffff"
+                  height="20px"
+                  width="20px"
+                  version="1.1"
+                  id="Capa_1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  viewBox="0 0 488.4 488.4"
+                  xml:space="preserve"
+                >
+                  <path
+                    d="M0,203.25c0,112.1,91.2,203.2,203.2,203.2c51.6,0,98.8-19.4,134.7-51.2l129.5,129.5c2.4,2.4,5.5,3.6,8.7,3.6
+                    s6.3-1.2,8.7-3.6c4.8-4.8,4.8-12.5,0-17.3l-129.6-129.5c31.8-35.9,51.2-83,51.2-134.7c0-112.1-91.2-203.2-203.2-203.2
+                    S0,91.15,0,203.25z M381.9,203.25c0,98.5-80.2,178.7-178.7,178.7s-178.7-80.2-178.7-178.7s80.2-178.7,178.7-178.7
+                    S381.9,104.65,381.9,203.25z"
+                  />
+                </svg>
+              </button>
+            </li>
+      
+            <li class="cart"><a href="#">Koszyk</a></li>
+      
+            <li href="#" class="loginIcon">
+              <img src="./images/loginIcon2.png" alt="loginIcon" id="loginIcon" />
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="banner">
+        <img src="./images/baner.jpg" alt="baner" id="baner" />
+      </div>
+
+      <div class="content">
+
+        <div class="book-list">
+          <% books.forEach(book => { %>
+            <div class="book-item">
+              <img src="images/bookImages/<%= book.Image %>.png" alt="<%= book.Title %>" class="book-cover">
+              <h2><%= book.Title %></h2>
+              <p>Autor: <%= book.Author %></p>
+              <% if (book.Sale_price) { %>
+                <p>Przed przeceną: <strong style="text-decoration:line-through"><%= book.Price.toFixed(2) %></strong> PLN</p>
+                <p>Cena: <strong class="red"><%= book.Sale_price.toFixed(2) %></strong> PLN</p>
+            
+              <% } else { %>
+                <p>Cena: <%= book.Price.toFixed(2) %> PLN</p>
+              <% } %>
+            </div>
+          <% }); %>
+        </div>
+        
+
+      </div>
+
+      <div class="footer">
+        <div class="footer-content">
+          <p>&copy; <%= new Date().getFullYear(); %> Oskar U • Zbudowane za pomocą Node Express i MySQL</p>
+          <ul>
+            <li><a href="#">O nas</a></li>
+            <li><a href="#">Kontakt</a></li>
+            <li><a href="#">Koszty i sposób dostawy</a></li>
+          </ul>
+        </div>
+      </div>
+      
+    </div>
+  </body>
+</html>

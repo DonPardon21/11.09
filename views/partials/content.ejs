@@ -1,0 +1,40 @@
+<div class="content">
+  <div class="book-list">
+    <% books.forEach(book => { %>
+    <div class="book-item">
+      <img
+        src="images/bookImages/<%= book.Image %>.png"
+        alt="<%= book.Title %>"
+        class="book-cover"
+      />
+      <h2><%= book.Title %></h2>
+      <p>Autor: <%= book.Author %></p>
+      <% if (book.IsUsed === 1) { %>
+      <p>
+        Stan:
+        <strong>Używana</strong>
+      </p>
+      <% }else{ %>
+      <p>
+        Stan:
+        <strong>Nowa</strong>
+      </p>
+      <% } %> <% if (book.Sale_price) { %>
+      <p>
+        Przed przeceną:
+        <strong style="text-decoration: line-through"
+          ><%= book.Price.toFixed(2) %></strong
+        >
+        PLN
+      </p>
+      <p>
+        Cena: <strong class="red"><%= book.Sale_price.toFixed(2) %></strong> PLN
+      </p>
+      <% } else { %>
+      <p>Cena: <%= book.Price.toFixed(2) %> PLN</p>
+      <% } %>
+      <button class="add-to-cart">Dodaj do koszyka</button>
+    </div>
+    <% }); %>
+  </div>
+</div>

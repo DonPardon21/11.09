@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <%- include("../partials/head") %>
+  <body>
+       
+    <%- include("../partials/header") %>
+    <h1>Podręczniki</h1>
+    
+    <% if (category === 'szkolaPodstawowa') { %>
+        <p>Podręczniki Szkoły podstawowej</p>
+      <% } else if (category === 'technikumLiceum') { %>
+        <p>Podreczniki Technikum/Liceum</p>
+      <% } else if (category === 'matura') { %>
+        <p>Podreczniki do matury</p>
+      <% } %>
+
+
+    <%- include("../partials/footer") %>
+  </body>
+
+
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <%- include("../partials/head") %>
+  <body>
+   
+    <%- include("../partials/header") %>
+    <h1>Książki</h1>
+
+    <% if (category === 'fantastyka') { %>
+        <p>Tutaj znajdziesz książki z gatunku fantastyki...</p>
+      <% } else if (category === 'historia') { %>
+        <p>Tutaj znajdziesz książki historyczne...</p>
+      <% } else if (category === 'kryminal') { %>
+        <p>Tutaj znajdziesz kryminały...</p>
+      <% } else if (category === 'religia') { %>
+        <p>Tutaj znajdziesz książki religijne...</p>
+      <% } %>
+
+    <%- include("../partials/footer") %>
+  </body>
+
+
+</html>
