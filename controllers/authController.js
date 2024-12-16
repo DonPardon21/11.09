@@ -52,7 +52,7 @@ async function loginUser(req, res) {
 
       // Ustawienie sesji i ciasteczek
       req.session.user = { login: results[0].Login, lastLogin: new Date() };
-      res.cookie("lastLogin", new Date().toISOString(), { httpOnly: true });
+      res.cookie("lastLogin", new Date().toISOString(), { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
       res.cookie("message", "Zalogowano pomyślnie", {
         httpOnly: false,
         maxAge: 5000,

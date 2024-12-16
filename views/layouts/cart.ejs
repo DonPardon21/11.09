@@ -2,12 +2,64 @@
 <html lang="pl">
   <%- include("../partials/head") %>
   <body>
-   
     <%- include("../partials/header") %>
-    Koszyk
+    <div class="content">
+      <h1>Twój koszyk</h1>
+      <div class="book-list-cart">
+        <% let totalAmount = 0; %>
+        <% cart.forEach(book => { 
+          const price = book.Sale_price ? book.Sale_price : book.Price;
+          totalAmount += price * book.quantity;
+        %>
+        <div class="book-item-cart">
+          <img
+            src="images/bookImages/<%= book.Image %>.png"
+            alt="<%= book.Title %>"
+            class="book-cover-cart"
+          />
+          <h2><%= book.Title %></h2>
+          <p>Autor: <%= book.Author %></p>
+          <p>Ilość sztuk: <%= book.quantity %></p>
+          <% if (book.IsUsed === 1) { %>
+          <p>
+            Stan: <strong>Używana</strong>
+          </p>
+          <% } else { %>
+          <p>
+            Stan: <strong>Nowa</strong>
+          </p>
+          <% } %>
+          <% if (book.Sale_price) { %>
+          <p>
+            Przed przeceną:
+            <strong style="text-decoration: line-through"><%= book.Price.toFixed(2) %></strong> PLN
+          </p>
+          <p>
+            Cena:
+            <strong class="red"><%= book.Sale_price.toFixed(2) %></strong> PLN
+          </p>
+          <% } else { %>
+          <p>Cena: <%= book.Price.toFixed(2) %> PLN</p>
+          <% } %>
+          <button onclick="addProduct('<%= JSON.stringify(book) %>')" class="add-more">
+            +
+          </button>
+          <button onclick="removeProduct('<%= JSON.stringify(book) %>')" class="remove-from-cart">
+            Usuń z koszyka
+          </button>
+        </div>
+        <% }); %>
+      </div>
+
+      <!-- Sekcja podsumowania -->
+      <div class="cart-summary">
+        <h2>Podsumowanie</h2>
+        <p>Łączna kwota do zapłaty: <strong><%= totalAmount.toFixed(2) %></strong> PLN</p>
+        <button onclick="window.location.href='/dostawa'" class="checkout-btn">
+          Przejdź do dostawy
+        </button>
+      </div>
+    </div>
     <%- include("../partials/footer") %>
-
-
   </body>
 </html>
-

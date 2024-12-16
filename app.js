@@ -10,19 +10,21 @@ const mysql = require("mysql");
 const app = express();
 const PORT = 8000;
 
+app.use(express.json());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   session({
     secret: "secret_key",
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false }
   })
 );
 
 app.use("/auth", authRoutes);
-
 
 const con = mysql.createConnection({
   host: "localhost",

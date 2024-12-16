@@ -9,6 +9,7 @@
       />
       <h2><%= book.Title %></h2>
       <p>Autor: <%= book.Author %></p>
+      <p>Ilość dostępnych: <Strong><%= book.Stock %></Strong> </p>
       <% if (book.IsUsed === 1) { %>
       <p>
         Stan:
@@ -33,7 +34,12 @@
       <% } else { %>
       <p>Cena: <%= book.Price.toFixed(2) %> PLN</p>
       <% } %>
-      <button class="add-to-cart">Dodaj do koszyka</button>
+      <button
+        onclick="addProduct('<%= JSON.stringify(book) %>')"
+        class="add-to-cart"
+      >
+        Dodaj do koszyka
+      </button>
     </div>
     <% }); %>
   </div>

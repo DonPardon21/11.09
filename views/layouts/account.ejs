@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <%- include("../partials/head") %>
+  <body>
+    <%- include("../partials/header") %>
+    <div class="account-container">
+      <h1>Witaj, <%= user.login %>!</h1>
+
+      <section class="user-info">
+        <h2>Twoje dane:</h2>
+        <p>Email: <%= user.email %></p>
+        <p>
+          Ostatnie logowanie: <%= user.lastLogin ?
+          user.lastLogin.toLocaleString() : "Brak danych" %>
+        </p>
+      </section>
+
+      <section class="user-orders">
+        <h2>Twoje zamówienia:</h2>
+        <% if (orders.length > 0) { %>
+        <ul>
+          <% orders.forEach(order => { %>
+          <li>
+            Zamówienie nr: <%= order.id %>, kwota: <%= order.amount %> PLN,
+            status: <%= order.status %>
+          </li>
+          <% }); %>
+        </ul>
+        <% } else { %>
+        <p>Nie masz jeszcze żadnych zamówień.</p>
+        <% } %>
+      </section>
+
+      <a href="/auth/logout" class="logout-btn">Wyloguj się</a>
+    </div>
+
+    <%- include("../partials/footer") %>
+  </body>
+</html>

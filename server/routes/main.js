@@ -50,8 +50,81 @@ router.get("/searchBooks", async (req, res) => {
 });
 
 router.get("/cart", (req, res) => {
-  res.render("layouts/cart");
+  let cart = [];
+
+  if (req.session && req.session.cart) {
+    cart = req.session.cart.cartProducts;
+    console.log(cart);
+  }
+  res.render("layouts/cart", { cart });
 });
+
+router.post("/cart", (req, res) => {
+  const product = req.body; // Otrzymany produkt
+  const productBookID = product.BookID; // Pobranie właściwego identyfikatora
+
+  console.log("Dodawany produkt:", product);
+
+  // Inicjalizacja koszyka, jeśli nie istnieje
+  if (!req.session.cart) {
+    req.session.cart = { cartProducts: [] };
+  }
+
+  console.log("Koszyk przed dodaniem:", req.session.cart.cartProducts);
+
+  // Sprawdzenie, czy produkt już istnieje w koszyku
+  let productExists = false;
+  req.session.cart.cartProducts = req.session.cart.cartProducts.map(
+    (cartItem) => {
+      if (cartItem.BookID === productBookID) {
+        cartItem.quantity += 1; // Zwiększenie ilości
+        productExists = true;
+      }
+      return cartItem;
+    }
+  );
+
+  // Jeśli produkt nie istnieje, dodaj go do koszyka
+  if (!productExists) {
+    product.quantity = 1; // Inicjalizacja ilości
+    req.session.cart.cartProducts.push(product);
+    console.log("Dodano nowy produkt do koszyka:", product);
+  }
+
+  console.log("Koszyk po dodaniu:", req.session.cart.cartProducts);
+
+  // Zapis sesji
+  req.session.save((err) => {
+    if (err) {
+      console.error("Błąd zapisywania sesji:", err);
+      return res.status(500).json({ error: "Błąd dodawania do koszyka" });
+    }
+    res.status(200).json({ ok: "Produkt dodany do koszyka" });
+  });
+});
+
+router.delete("/cart", (req, res) => {
+  const productId = req.body.BookID; // Identyfikator produktu do usunięcia
+
+  if (!req.session.cart || !req.session.cart.cartProducts) {
+    return res.status(404).json({ error: "Koszyk jest pusty." });
+  }
+
+  // Filtruj koszyk, aby usunąć produkt o podanym BookID
+  req.session.cart.cartProducts = req.session.cart.cartProducts.filter(
+    (cartItem) => cartItem.BookID !== productId
+  );
+
+  req.session.save((err) => {
+    if (err) {
+      console.error("Błąd zapisywania sesji:", err);
+      return res.status(500).json({ error: "Nie udało się usunąć produktu z koszyka." });
+    }
+
+    res.status(200).json({ ok: "Produkt został usunięty z koszyka." });
+  });
+});
+
 
 router.get("/login", (req, res) => {
   res.render("layouts/login");

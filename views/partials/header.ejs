@@ -1,4 +1,11 @@
 <div class="header">
+  <!-- Modal -->
+<div id="add-to-cart-modal" class="modal">
+  <div class="modal-content">
+    <p id="modal-message">Produkt został dodany do koszyka!</p>
+  </div>
+</div>
+
   <h1>
     <a href="/main" class="no-underline">
       <img id="logo" src="/images/library.png" alt="logo" />
@@ -65,7 +72,12 @@
 
       <!-- Pasek wyszukiwania -->
       <div class="search-bar">
-        <input id="searchInput" type="text" placeholder="Wpisz, czego szukasz..." onkeyup="searchBooks()"/>
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Wpisz, czego szukasz..."
+          onkeyup="searchBooks()"
+        />
       </div>
 
       <div id="searchResults"></div>
@@ -74,9 +86,14 @@
       <li class="cart"><a href="/cart">Koszyk</a></li>
 
       <!-- Ikona logowania -->
-      <a href="/login"><li class="loginIcon">
-        <img src="/images/loginIcon2.png" alt="loginIcon" id="loginIcon" />
-      </li></a>
+      <a href="/auth/account"
+        ><li class="loginIcon">
+          <img
+            src="/images/loginIcon2.png"
+            alt="loginIcon"
+            id="loginIcon"
+          /></li
+      ></a>
     </ul>
   </div>
 </div>
