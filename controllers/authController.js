@@ -33,11 +33,12 @@ async function registerUser(req, res) {
 
 // Logowanie użytkownika
 async function loginUser(req, res) {
-  const { login, password } = req.body;
+  const { login, password } = req.body;  // login to może być login lub email
 
   try {
-    const query = "SELECT * FROM users WHERE Login = ?";
-    db.query(query, [login], async (err, results) => {
+    // Sprawdzamy zarówno login, jak i email
+    const query = "SELECT * FROM users WHERE Login = ? OR Email = ?";
+    db.query(query, [login, login], async (err, results) => {  // Tu musimy oba parametry przekazać jako 'login'
       if (err) {
         console.error("Błąd logowania:", err.message);
         return res.status(500).send("Wystąpił błąd");
@@ -47,12 +48,20 @@ async function loginUser(req, res) {
         results.length === 0 ||
         !(await bcrypt.compare(password, results[0].Password))
       ) {
-        return res.status(401).send("Nieprawidłowe dane logowania");
+        return res.status(401).send("Nieprawidłowy login lub hasło");  // Ogólny komunikat
       }
 
       // Ustawienie sesji i ciasteczek
-      req.session.user = { login: results[0].Login, lastLogin: new Date() };
-      res.cookie("lastLogin", new Date().toISOString(), { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+      req.session.user = {
+        login: results[0].Login,
+        email: results[0].Email,  // Dodanie emaila do sesji
+        lastLogin: new Date(),
+      };
+
+      res.cookie("lastLogin", new Date().toISOString(), {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
       res.cookie("message", "Zalogowano pomyślnie", {
         httpOnly: false,
         maxAge: 5000,
@@ -66,5 +75,6 @@ async function loginUser(req, res) {
     res.status(500).send("Wystąpił błąd");
   }
 }
+
 
 module.exports = { registerUser, loginUser };

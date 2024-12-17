@@ -8,9 +8,9 @@
 
       <section class="user-info">
         <h2>Twoje dane:</h2>
-        <p>Email: <%= user.email %></p>
+        <p>Email: <%= user.email %></p> <!-- Wyświetlenie e-maila -->
         <p>
-          Ostatnie logowanie: <%= user.lastLogin ?
+          Ostatnie logowanie: <%= user.lastLogin ? 
           user.lastLogin.toLocaleString() : "Brak danych" %>
         </p>
       </section>

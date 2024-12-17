@@ -118,51 +118,117 @@ router.delete("/cart", (req, res) => {
   req.session.save((err) => {
     if (err) {
       console.error("Błąd zapisywania sesji:", err);
-      return res.status(500).json({ error: "Nie udało się usunąć produktu z koszyka." });
+      return res
+        .status(500)
+        .json({ error: "Nie udało się usunąć produktu z koszyka." });
     }
 
     res.status(200).json({ ok: "Produkt został usunięty z koszyka." });
   });
 });
 
+router.get("/shipping", (req, res) => {
+  res.render("layouts/shipping");
+});
+
+router.get("/contact", (req, res) => {
+  res.render("layouts/contact");
+});
 
 router.get("/login", (req, res) => {
   res.render("layouts/login");
 });
 
-router.get("/outlet", (req, res) => {
-  res.render("layouts/outlet");
-});
-
-router.get("/about", (req, res) => {
-  res.render("layouts/about");
-});
-
-router.get("/ksiazki", (req, res) => {
-  res.render("layouts/ksiazki", { category: null });
-});
-
-router.get("/ksiazki/:category", async (req, res) => {
-  const category = req.params.category;
+router.get("/outlet", async (req, res) => {
   const locals = {
-    title: `Książki - ${category.charAt(0).toUpperCase() + category.slice(1)}`,
-    description: `Dostępne książki z kategorii ${category}.`,
+    title: "Outlet",
+    description: "Książki używane w super cenach!",
   };
 
   try {
-    const books = await queryDatabase(
-      "SELECT * FROM books WHERE Category = ?",
-      [category]
-    );
-    res.render("layouts/ksiazki", { locals, books });
+    // Pobranie książek używanych (IsUsed = 1)
+    const books = await queryDatabase("SELECT * FROM books WHERE IsUsed = 1");
+    res.render("layouts/outlet", { locals, books });
   } catch (err) {
     console.error(err);
     res.status(500).send("Błąd podczas pobierania książek.");
   }
 });
 
-router.get("/podreczniki", (req, res) => {
-  res.render("layouts/podreczniki", { category: null });
+router.get("/about", (req, res) => {
+  res.render("layouts/about");
+});
+
+router.get("/ksiazki", async (req, res) => {
+  const locals = {
+    title: "Książki",
+    description: "Wszystkie dostępne książki.",
+  };
+
+  try {
+    // Pobranie wszystkich podręczników (CategoryID = 1)
+    const books = await queryDatabase(
+      "SELECT * FROM books WHERE CategoryID = ?",
+      [1] // CategoryID = 1 dla książek
+    );
+    res.render("layouts/podreczniki", { locals, books, category: null });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Błąd podczas pobierania podręczników.");
+  }
+});
+
+router.get("/ksiazki/:category", async (req, res) => {
+  const category = req.params.category;
+  const locals = {
+    title: `Książki - ${category.charAt(0).toUpperCase() + category.slice(1)}`,
+    description: `Dostępne podręczniki z kategorii ${category}.`,
+  };
+
+  // Mapowanie kategorii na SubCategoryID
+  const subCategoryMap = {
+    fantastyka: 1,
+    historia: 2,
+    kryminal: 3,
+    religia: 4,
+  };
+
+  const subCategoryID = subCategoryMap[category];
+
+  if (!subCategoryID) {
+    return res.status(404).send("Nie znaleziono kategorii.");
+  }
+
+  try {
+    // Pobranie podręczników z określonej podkategorii
+    const books = await queryDatabase(
+      "SELECT * FROM books WHERE SubCategoryID = ?",
+      [subCategoryID]
+    );
+    res.render("layouts/ksiazki", { locals, books, category });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Błąd podczas pobierania książek.");
+  }
+});
+
+router.get("/podreczniki", async (req, res) => {
+  const locals = {
+    title: "Podręczniki",
+    description: "Wszystkie dostępne podręczniki.",
+  };
+
+  try {
+    // Pobranie wszystkich podręczników (CategoryID = 2)
+    const books = await queryDatabase(
+      "SELECT * FROM books WHERE CategoryID = ?",
+      [2] // CategoryID = 2 dla podręczników
+    );
+    res.render("layouts/podreczniki", { locals, books, category: null });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Błąd podczas pobierania podręczników.");
+  }
 });
 
 router.get("/podreczniki/:category", async (req, res) => {
@@ -174,12 +240,26 @@ router.get("/podreczniki/:category", async (req, res) => {
     description: `Dostępne podręczniki z kategorii ${category}.`,
   };
 
+  // Mapowanie kategorii na SubCategoryID
+  const subCategoryMap = {
+    szkolaPodstawowa: 5,
+    technikumLiceum: 6,
+    matura: 7,
+  };
+
+  const subCategoryID = subCategoryMap[category];
+
+  if (!subCategoryID) {
+    return res.status(404).send("Nie znaleziono kategorii.");
+  }
+
   try {
+    // Pobranie podręczników z określonej podkategorii
     const books = await queryDatabase(
-      "SELECT * FROM books WHERE Category = ?",
-      [category]
+      "SELECT * FROM books WHERE SubCategoryID = ?",
+      [subCategoryID]
     );
-    res.render("layouts/podreczniki", { locals, books });
+    res.render("layouts/podreczniki", { locals, books, category });
   } catch (err) {
     console.error(err);
     res.status(500).send("Błąd podczas pobierania podręczników.");

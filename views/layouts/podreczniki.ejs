@@ -2,21 +2,46 @@
 <html lang="pl">
   <%- include("../partials/head") %>
   <body>
-       
     <%- include("../partials/header") %>
-    <h1>Podręczniki</h1>
-    
-    <% if (category === 'szkolaPodstawowa') { %>
-        <p>Podręczniki Szkoły podstawowej</p>
-      <% } else if (category === 'technikumLiceum') { %>
-        <p>Podreczniki Technikum/Liceum</p>
-      <% } else if (category === 'matura') { %>
-        <p>Podreczniki do matury</p>
-      <% } %>
-
-
+    <div class="content">
+      <h1><%= locals.title %></h1>
+      <p><%= locals.description %></p>
+      <div class="book-list">
+        <% books.forEach(book => { %>
+        <div class="book-item">
+          <img
+            src="/images/bookImages/<%= book.Image %>.png"
+            alt="<%= book.Title %>"
+            class="book-cover"
+          />
+          <h2><%= book.Title %></h2>
+          <p>Autor: <%= book.Author %></p>
+          <p>Ilość dostępnych: <strong><%= book.Stock %></strong></p>
+          <p>Stan: <strong><%= book.IsUsed === 1 ? "Używana" : "Nowa" %></strong></p>
+          <% if (book.Sale_price) { %>
+          <p>
+            Przed przeceną: 
+            <strong style="text-decoration: line-through">
+              <%= book.Price.toFixed(2) %>
+            </strong> PLN
+          </p>
+          <p>
+            Cena: 
+            <strong class="red"><%= book.Sale_price.toFixed(2) %></strong> PLN
+          </p>
+          <% } else { %>
+          <p>Cena: <%= book.Price.toFixed(2) %> PLN</p>
+          <% } %>
+          <button
+            onclick="addProduct('<%= JSON.stringify(book) %>')"
+            class="add-to-cart"
+          >
+            Dodaj do koszyka
+          </button>
+        </div>
+        <% }); %>
+      </div>
+    </div>
     <%- include("../partials/footer") %>
   </body>
-
-
 </html>

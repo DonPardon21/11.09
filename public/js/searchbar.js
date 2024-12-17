@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isExpanded) {
       searchBar.style.top = `${
         searchButton.getBoundingClientRect().bottom + window.scrollY
-      }px`; 
+      }px`;
       searchBar.style.right = `${
         document.body.clientWidth - searchButton.getBoundingClientRect().right
-      }px`; 
+      }px`;
       searchBar.classList.add("search-bar-active");
     } else {
       searchBar.classList.remove("search-bar-active");
@@ -20,28 +20,23 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 function showModalMessage(message, isError = false) {
   const modal = document.getElementById("add-to-cart-modal");
   const modalMessage = document.getElementById("modal-message");
 
-
   modalMessage.textContent = message;
 
-  
   if (isError) {
     modal.classList.add("error");
   } else {
     modal.classList.remove("error");
   }
 
- 
   modal.style.display = "block";
 
-  
   setTimeout(() => {
     modal.style.display = "none";
-  }, 3500); 
+  }, 3500);
 }
 
 async function addProduct(object) {
@@ -58,7 +53,7 @@ async function addProduct(object) {
 
     if (response.ok) {
       showModalMessage("Produkt został dodany do koszyka!");
-      setTimeout(() => location.reload(), 500);
+     setTimeout(() => location.reload(), 1000);
     } else {
       const error = await response.json();
       showModalMessage("Błąd: " + error.error, true);

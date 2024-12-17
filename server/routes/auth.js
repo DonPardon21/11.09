@@ -13,9 +13,11 @@ router.get("/account", ensureAuthenticated, (req, res) => {
   console.log("auth");
 
   console.log(user);
+  
   // Możesz dodać zapytanie do bazy danych, aby pobrać zamówienia
   const orders = []; // Przykładowa pusta lista zamówień
   res.render("layouts/account", { user, orders });
+  
 });
 
 router.get("/logout", (req, res) => {

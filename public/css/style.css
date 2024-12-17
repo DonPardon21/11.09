@@ -652,3 +652,125 @@ body {
 }
 
 /***********************/
+
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.contact-form-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.contact-form-container h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-group {
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 1rem;
+  color: #555;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  height: 150px;
+  resize: none;
+}
+
+.submit-button {
+  background-color: #28a745;
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #218838;
+}
+
+.submit-button:focus {
+  outline: none;
+}
+
+
+/* Ogólne style dla sekcji dostawy */
+.shipping-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+/* Tytuł sekcji */
+.shipping-container h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Kontener dla każdej opcji dostawy */
+.shipping-option {
+  margin-bottom: 20px;
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.shipping-option:last-child {
+  border-bottom: none;
+}
+
+/* Nagłówek każdej opcji dostawy */
+.shipping-option h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 10px 0;
+}
+
+/* Opis każdej opcji dostawy */
+.shipping-option p {
+  font-size: 1rem;
+  color: #555;
+  margin: 5px 0;
+}
+
+/* Pogrubiona cena */
+.shipping-option strong {
+  color: #d9534f;
+  font-size: 1.2rem;
+}
