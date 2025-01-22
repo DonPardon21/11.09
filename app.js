@@ -24,6 +24,12 @@ app.use(
   })
 );
 
+
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
+
 app.use("/auth", authRoutes);
 
 const con = mysql.createConnection({
@@ -71,7 +77,7 @@ app.get("/search", (req, res) => {
       }
       res.json(results); // Zwróć wszystkie książki
     });
-  }
+  } 
 });
 
 app.listen(PORT, (err) => {

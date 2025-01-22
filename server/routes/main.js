@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { queryDatabase } = require("../../public/js/db"); // Załóżmy, że plik z połączeniem z bazą to db.js
-
+const { ensureAuthenticated } = require("../../middlewares/authMiddleware")
 // Routes
 
 router.get("/", async (req, res) => {
@@ -138,6 +138,23 @@ router.get("/contact", (req, res) => {
 router.get("/login", (req, res) => {
   res.render("layouts/login");
 });
+
+router.get("/zamow", ensureAuthenticated, (req, res) => {
+  const cart = req.session.cart ? req.session.cart.cartProducts : [];
+  const totalAmount = cart.reduce((sum, book) => {
+    const price = book.Sale_price || book.Price;
+    return sum + price * book.quantity;
+  }, 0);
+
+  // Czyszczenie koszyka po odwiedzeniu strony „Zamów”
+  req.session.cart = null;
+
+  res.render("layouts/zamow", { cart, totalAmount, user: req.session.user });
+});
+
+
+
+
 
 router.get("/outlet", async (req, res) => {
   const locals = {

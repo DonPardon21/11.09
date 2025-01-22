@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <%- include("../partials/head") %>
+  <body>
+    <%- include("../partials/header") %>
+
+    <div class="content">
+      <h1>Podsumowanie zamówienia</h1>
+      <div class="order-summary">
+        <% if (cart && cart.length > 0) { %>
+          <div class="book-list-order">
+            <% cart.forEach(book => { %>
+              <div class="book-item-order">
+                <img
+                  src="images/bookImages/<%= book.Image %>.png"
+                  alt="<%= book.Title %>"
+                  class="book-cover-order"
+                />
+                <h2><%= book.Title %></h2>
+                <p>Autor: <%= book.Author %></p>
+                <p>Ilość sztuk: <%= book.quantity %></p>
+                <% if (book.Sale_price) { %>
+                  <p>Cena jednostkowa: <strong><%= book.Sale_price.toFixed(2) %></strong> PLN</p>
+                <% } else { %>
+                  <p>Cena jednostkowa: <%= book.Price.toFixed(2) %> PLN</p>
+                <% } %>
+              </div>
+            <% }); %>
+          </div>
+          <div class="total-summary">
+            <h2>Łączna kwota do zapłaty</h2>
+            <p><strong><%= totalAmount.toFixed(2) %></strong> PLN</p>
+          </div>
+        <% } else { %>
+          <p>Koszyk jest pusty. Nie można wygenerować zamówienia.</p>
+          <a href="/cart">
+            <button class="return-btn">Wróć do koszyka</button>
+          </a>
+        <% } %>
+      </div>
+    </div>
+
+    <%- include("../partials/footer") %>
+  </body>
+</html>
