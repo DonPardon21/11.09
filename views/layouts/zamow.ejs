@@ -31,6 +31,15 @@
             <h2>Łączna kwota do zapłaty</h2>
             <p><strong><%= totalAmount.toFixed(2) %></strong> PLN</p>
           </div>
+<<<<<<< Updated upstream
+=======
+          <form action="/order/create" method="POST">
+            <input type="hidden" name="userId" value="<%= user._id %>">
+            <input type="hidden" name="amount" value="<%= totalAmount %>">
+            <input type="hidden" name="status" value="pending">
+            <button class="checkout-btn"  type="submit">Zamów</button>
+          </form>
+>>>>>>> Stashed changes
         <% } else { %>
           <p>Koszyk jest pusty. Nie można wygenerować zamówienia.</p>
           <a href="/cart">
@@ -42,4 +51,8 @@
 
     <%- include("../partials/footer") %>
   </body>
+<<<<<<< Updated upstream
 </html>
+=======
+</html>
+>>>>>>> Stashed changes

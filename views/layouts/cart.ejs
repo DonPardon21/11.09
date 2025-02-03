@@ -11,7 +11,7 @@
           const price = book.Sale_price ? book.Sale_price : book.Price; 
           totalAmount += price * book.quantity; 
         %>
-        <div class="book-item-cart">
+        <div class="book-item-cart" id="book-<%= book._id %>">
           <img
             src="images/bookImages/<%= book.Image %>.png"
             alt="<%= book.Title %>"
@@ -19,7 +19,7 @@
           />
           <h2><%= book.Title %></h2>
           <p>Autor: <%= book.Author %></p>
-          <p>Ilość sztuk: <%= book.quantity %></p>
+          <p>Ilość sztuk: <span id="quantity-<%= book._id %>"><%= book.quantity %></span></p>
           <% if (book.IsUsed === 1) { %>
             <p>Stan: <strong>Używana</strong></p>
           <% } else { %>
@@ -47,6 +47,15 @@
             +
           </button>
           <button
+<<<<<<< Updated upstream
+=======
+            onclick="decreaseProduct('<%= JSON.stringify(book) %>')"
+            class="decrease-from-cart"
+          >
+            -
+          </button>
+          <button
+>>>>>>> Stashed changes
             onclick="removeProduct('<%= JSON.stringify(book) %>')"
             class="remove-from-cart"
           >
@@ -58,6 +67,7 @@
 
       <!-- Sekcja podsumowania -->
       <div class="cart-summary">
+<<<<<<< Updated upstream
   <% if (!user) { %>
     <p style="color: red;">Aby złożyć zamówienie, musisz się zalogować.</p>
     <a href="/login">
@@ -71,6 +81,21 @@
   <% } %>
 </div>
 
+=======
+        <% if (!user) { %>
+          <p style="color: red;">Aby złożyć zamówienie, musisz się zalogować.</p>
+          <a href="/login">
+            <button class="checkout-btn">Zaloguj się</button>
+          </a>
+        <% } else { %>
+          <p>Łączna kwota do zapłaty: <strong><%= totalAmount.toFixed(2) %></strong> PLN</p>
+          <a href="/zamow">
+            <button class="checkout-btn">Przejdź do zamówienia</button>
+          </a>
+        <% } %>
+      </div>
+    </div>
+>>>>>>> Stashed changes
     <%- include("../partials/footer") %>
   </body>
 </html>

@@ -11,7 +11,7 @@
         <p>Email: <%= user.email %></p> <!-- Wyświetlenie e-maila -->
         <p>
           Ostatnie logowanie: <%= user.lastLogin ? 
-          user.lastLogin.toLocaleString() : "Brak danych" %>
+          new Date(user.lastLogin).toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw' }) : "Brak danych" %>
         </p>
       </section>
 
@@ -21,8 +21,8 @@
         <ul>
           <% orders.forEach(order => { %>
           <li>
-            Zamówienie nr: <%= order.id %>, kwota: <%= order.amount %> PLN,
-            status: <%= order.status %>
+            Zamówienie nr: <%= order._id %>, kwota: <%= order.amount %> PLN,
+            status: <%= order.status %>, data: <%= new Date(order.createdAt).toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw' }) %>
           </li>
           <% }); %>
         </ul>

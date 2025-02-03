@@ -36,7 +36,7 @@ function showModalMessage(message, isError = false) {
 
   setTimeout(() => {
     modal.style.display = "none";
-  }, 3500);
+  }, 5000);
 }
 
 async function addProduct(object) {
@@ -52,8 +52,14 @@ async function addProduct(object) {
     });
 
     if (response.ok) {
+      const product = JSON.parse(object);
+      const quantityElement = document.getElementById(
+        `quantity-${product._id}`
+      );
+      if (quantityElement) {
+        quantityElement.textContent = parseInt(quantityElement.textContent) + 1;
+      }
       showModalMessage("Produkt został dodany do koszyka!");
-     setTimeout(() => location.reload(), 1000);
     } else {
       const error = await response.json();
       showModalMessage("Błąd: " + error.error, true);
@@ -75,8 +81,12 @@ async function removeProduct(object) {
     });
 
     if (response.ok) {
+      const product = JSON.parse(object);
+      const productElement = document.getElementById(`book-${product._id}`);
+      if (productElement) {
+        productElement.remove();
+      }
       showModalMessage("Produkt został usunięty z koszyka!");
-      setTimeout(() => location.reload(), 1000);
     } else {
       const error = await response.json();
       showModalMessage("Błąd: " + error.error, true);
@@ -84,5 +94,45 @@ async function removeProduct(object) {
   } catch (err) {
     console.error("Błąd żądania usunięcia produktu:", err);
     showModalMessage("Wystąpił błąd podczas usuwania produktu.", true);
+  }
+}
+
+async function decreaseProduct(object) {
+  try {
+    const response = await fetch("http://localhost:8000/cart", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(JSON.parse(object)),
+    });
+
+    if (response.ok) {
+      const product = JSON.parse(object);
+      const quantityElement = document.getElementById(
+        `quantity-${product._id}`
+      );
+      if (quantityElement) {
+        const newQuantity = parseInt(quantityElement.textContent) - 1;
+        if (newQuantity > 0) {
+          quantityElement.textContent = newQuantity;
+        } else {
+          const productElement = document.getElementById(`book-${product._id}`);
+          if (productElement) {
+            productElement.remove();
+          }
+        }
+      }
+      showModalMessage("Ilość produktu została zmniejszona!");
+    } else {
+      const error = await response.json();
+      showModalMessage("Błąd: " + error.error, true);
+    }
+  } catch (err) {
+    console.error("Błąd żądania zmniejszenia ilości produktu:", err);
+    showModalMessage(
+      "Wystąpił błąd podczas zmniejszania ilości produktu.",
+      true
+    );
   }
 }

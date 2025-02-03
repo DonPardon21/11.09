@@ -1,12 +1,20 @@
 const express = require("express");
 const router = express.Router();
+<<<<<<< Updated upstream
 const { queryDatabase } = require("../../public/js/db"); // Załóżmy, że plik z połączeniem z bazą to db.js
 const { ensureAuthenticated } = require("../../middlewares/authMiddleware")
 // Routes
+=======
+const { queryDatabase } = require("../../public/js/db");
+const { ensureAuthenticated } = require("../../middlewares/authMiddleware");
+const Book = require("../../models/Book"); // Importowanie modelu Book
+
+// Trasy
+>>>>>>> Stashed changes
 
 router.get("/", async (req, res) => {
   try {
-    const books = await queryDatabase("SELECT * FROM books");
+    const books = await queryDatabase(Book, {});
     const locals = {
       title: "Księgarnia Libran",
       description: "Księgarnia On-line na każdą kieszeń",
@@ -20,7 +28,7 @@ router.get("/", async (req, res) => {
 
 router.get("/main", async (req, res) => {
   try {
-    const books = await queryDatabase("SELECT * FROM books");
+    const books = await queryDatabase(Book, {});
     res.render("layouts/main", { books });
   } catch (err) {
     console.error(err);
@@ -35,13 +43,13 @@ router.get("/searchBooks", async (req, res) => {
     return res.json({ books: [] });
   }
 
-  const sql = `
-    SELECT * FROM books
-    WHERE Title LIKE ? OR Author LIKE ?
-  `;
-
   try {
-    const books = await queryDatabase(sql, [`%${query}%`, `%${query}%`]);
+    const books = await queryDatabase(Book, {
+      $or: [
+        { Title: { $regex: query, $options: "i" } },
+        { Author: { $regex: query, $options: "i" } },
+      ],
+    });
     res.json({ books });
   } catch (err) {
     console.error(err);
@@ -56,12 +64,12 @@ router.get("/cart", (req, res) => {
     cart = req.session.cart.cartProducts;
     console.log(cart);
   }
-  res.render("layouts/cart", { cart });
+  res.render("layouts/cart", { cart, user: req.session.user });
 });
 
 router.post("/cart", (req, res) => {
   const product = req.body; // Otrzymany produkt
-  const productBookID = product.BookID; // Pobranie właściwego identyfikatora
+  const productBookID = product._id; // Pobranie właściwego identyfikatora
 
   console.log("Dodawany produkt:", product);
 
@@ -76,7 +84,7 @@ router.post("/cart", (req, res) => {
   let productExists = false;
   req.session.cart.cartProducts = req.session.cart.cartProducts.map(
     (cartItem) => {
-      if (cartItem.BookID === productBookID) {
+      if (cartItem._id === productBookID) {
         cartItem.quantity += 1; // Zwiększenie ilości
         productExists = true;
       }
@@ -103,16 +111,46 @@ router.post("/cart", (req, res) => {
   });
 });
 
-router.delete("/cart", (req, res) => {
-  const productId = req.body.BookID; // Identyfikator produktu do usunięcia
+router.put("/cart", (req, res) => {
+  const productId = req.body._id; // Identyfikator produktu do zmniejszenia ilości
 
   if (!req.session.cart || !req.session.cart.cartProducts) {
     return res.status(404).json({ error: "Koszyk jest pusty." });
   }
 
-  // Filtruj koszyk, aby usunąć produkt o podanym BookID
+  // Zmniejsz ilość produktu w koszyku
+  req.session.cart.cartProducts = req.session.cart.cartProducts.map(
+    (cartItem) => {
+      if (cartItem._id === productId) {
+        cartItem.quantity -= 1; // Zmniejszenie ilości
+        if (cartItem.quantity <= 0) {
+          return null; // Usuń produkt, jeśli ilość jest mniejsza lub równa 0
+        }
+      }
+      return cartItem;
+    }
+  ).filter(Boolean); // Filtruj null wartości
+
+  req.session.save((err) => {
+    if (err) {
+      console.error("Błąd zapisywania sesji:", err);
+      return res.status(500).json({ error: "Błąd zmniejszania ilości w koszyku" });
+    }
+
+    res.status(200).json({ ok: "Ilość produktu zmniejszona" });
+  });
+});
+
+router.delete("/cart", (req, res) => {
+  const productId = req.body._id; // Identyfikator produktu do usunięcia
+
+  if (!req.session.cart || !req.session.cart.cartProducts) {
+    return res.status(404).json({ error: "Koszyk jest pusty." });
+  }
+
+  // Filtruj koszyk, aby usunąć produkt o podanym _id
   req.session.cart.cartProducts = req.session.cart.cartProducts.filter(
-    (cartItem) => cartItem.BookID !== productId
+    (cartItem) => cartItem._id !== productId
   );
 
   req.session.save((err) => {
@@ -152,10 +190,13 @@ router.get("/zamow", ensureAuthenticated, (req, res) => {
   res.render("layouts/zamow", { cart, totalAmount, user: req.session.user });
 });
 
+<<<<<<< Updated upstream
 
 
 
 
+=======
+>>>>>>> Stashed changes
 router.get("/outlet", async (req, res) => {
   const locals = {
     title: "Outlet",
@@ -163,8 +204,8 @@ router.get("/outlet", async (req, res) => {
   };
 
   try {
-    // Pobranie książek używanych (IsUsed = 1)
-    const books = await queryDatabase("SELECT * FROM books WHERE IsUsed = 1");
+    // Pobranie książek używanych (IsUsed = true)
+    const books = await queryDatabase(Book, { IsUsed: true });
     res.render("layouts/outlet", { locals, books });
   } catch (err) {
     console.error(err);
@@ -183,15 +224,12 @@ router.get("/ksiazki", async (req, res) => {
   };
 
   try {
-    // Pobranie wszystkich podręczników (CategoryID = 1)
-    const books = await queryDatabase(
-      "SELECT * FROM books WHERE CategoryID = ?",
-      [1] // CategoryID = 1 dla książek
-    );
-    res.render("layouts/podreczniki", { locals, books, category: null });
+    // Pobranie wszystkich książek
+    const books = await queryDatabase(Book, {});
+    res.render("layouts/ksiazki", { locals, books, category: null });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Błąd podczas pobierania podręczników.");
+    res.status(500).send("Błąd podczas pobierania książek.");
   }
 });
 
@@ -199,7 +237,7 @@ router.get("/ksiazki/:category", async (req, res) => {
   const category = req.params.category;
   const locals = {
     title: `Książki - ${category.charAt(0).toUpperCase() + category.slice(1)}`,
-    description: `Dostępne podręczniki z kategorii ${category}.`,
+    description: `Dostępne książki z kategorii ${category}.`,
   };
 
   // Mapowanie kategorii na SubCategoryID
@@ -217,11 +255,8 @@ router.get("/ksiazki/:category", async (req, res) => {
   }
 
   try {
-    // Pobranie podręczników z określonej podkategorii
-    const books = await queryDatabase(
-      "SELECT * FROM books WHERE SubCategoryID = ?",
-      [subCategoryID]
-    );
+    // Pobranie książek z określonej podkategorii
+    const books = await queryDatabase(Book, { SubCategoryID: subCategoryID });
     res.render("layouts/ksiazki", { locals, books, category });
   } catch (err) {
     console.error(err);
@@ -237,10 +272,7 @@ router.get("/podreczniki", async (req, res) => {
 
   try {
     // Pobranie wszystkich podręczników (CategoryID = 2)
-    const books = await queryDatabase(
-      "SELECT * FROM books WHERE CategoryID = ?",
-      [2] // CategoryID = 2 dla podręczników
-    );
+    const books = await queryDatabase(Book, { CategoryID: 2 });
     res.render("layouts/podreczniki", { locals, books, category: null });
   } catch (err) {
     console.error(err);
@@ -251,9 +283,7 @@ router.get("/podreczniki", async (req, res) => {
 router.get("/podreczniki/:category", async (req, res) => {
   const category = req.params.category;
   const locals = {
-    title: `Podręczniki - ${
-      category.charAt(0).toUpperCase() + category.slice(1)
-    }`,
+    title: `Podręczniki - ${category.charAt(0).toUpperCase() + category.slice(1)}`,
     description: `Dostępne podręczniki z kategorii ${category}.`,
   };
 
@@ -272,10 +302,7 @@ router.get("/podreczniki/:category", async (req, res) => {
 
   try {
     // Pobranie podręczników z określonej podkategorii
-    const books = await queryDatabase(
-      "SELECT * FROM books WHERE SubCategoryID = ?",
-      [subCategoryID]
-    );
+    const books = await queryDatabase(Book, { SubCategoryID: subCategoryID });
     res.render("layouts/podreczniki", { locals, books, category });
   } catch (err) {
     console.error(err);

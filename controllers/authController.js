@@ -1,13 +1,5 @@
 const bcrypt = require("bcrypt");
-const mysql = require("mysql");
-
-// Konfiguracja połączenia z bazą danych
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "ksiegarnia",
-});
+const User = require("../models/User"); // Importowanie modelu User
 
 // Rejestracja użytkownika
 async function registerUser(req, res) {
@@ -17,64 +9,45 @@ async function registerUser(req, res) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const query = "INSERT INTO users (Login, Password, Email) VALUES (?, ?, ?)";
-    db.query(query, [login, hashedPassword, email], (err) => {
-      if (err) {
-        console.error("Błąd rejestracji:", err.message);
-        return res.status(500).send("Wystąpił błąd");
-      }
-      res.status(201).send("Użytkownik zarejestrowany pomyślnie");
+    const newUser = new User({
+      login,
+      password: hashedPassword,
+      email,
     });
+
+    await newUser.save();
+    res.status(201).send("Użytkownik zarejestrowany pomyślnie");
   } catch (err) {
-    console.error("Błąd rejestracji:", err);
-    res.status(500).send("Wystąpił błąd");
+    console.error("Błąd rejestracji:", err.message);
+    res.status(500).send("Wystąpił błąd podczas rejestracji");
   }
 }
 
 // Logowanie użytkownika
 async function loginUser(req, res) {
-  const { login, password } = req.body;  // login to może być login lub email
+  const { login, password } = req.body;
 
   try {
-    // Sprawdzamy zarówno login, jak i email
-    const query = "SELECT * FROM users WHERE Login = ? OR Email = ?";
-    db.query(query, [login, login], async (err, results) => {  // Tu musimy oba parametry przekazać jako 'login'
-      if (err) {
-        console.error("Błąd logowania:", err.message);
-        return res.status(500).send("Wystąpił błąd");
-      }
+    const user = await User.findOne({ login });
+    if (!user) {
+      return res.status(400).send("Nieprawidłowy login lub hasło.");
+    }
 
-      if (
-        results.length === 0 ||
-        !(await bcrypt.compare(password, results[0].Password))
-      ) {
-        return res.status(401).send("Nieprawidłowy login lub hasło");  // Ogólny komunikat
-      }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).send("Nieprawidłowy login lub hasło.");
+    }
 
-      // Ustawienie sesji i ciasteczek
-      req.session.user = {
-        login: results[0].Login,
-        email: results[0].Email,  // Dodanie emaila do sesji
-        lastLogin: new Date(),
-      };
+    // Zapisz datę ostatniego logowania
+    user.lastLogin = new Date();
+    await user.save();
 
-      res.cookie("lastLogin", new Date().toISOString(), {
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-      res.cookie("message", "Zalogowano pomyślnie", {
-        httpOnly: false,
-        maxAge: 5000,
-      });
-
-      // Przekierowanie na stronę główną
-      res.redirect("/main");
-    });
+    req.session.user = user;
+    res.redirect("/main");
   } catch (err) {
-    console.error("Błąd logowania:", err);
-    res.status(500).send("Wystąpił błąd");
+    console.error("Błąd logowania:", err.message);
+    res.status(500).send("Wystąpił błąd podczas logowania");
   }
 }
-
 
 module.exports = { registerUser, loginUser };

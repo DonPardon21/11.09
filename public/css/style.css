@@ -350,10 +350,28 @@ body {
 }
 
 .add-to-cart {
-  border-radius: 15px;
-  padding: 2%;
-  font-weight: bold;
-  background-color: rgb(226, 129, 235);
+  background-color: #4CAF50; /* Zielony kolor tła */
+  color: white; /* Kolor tekstu */
+  border: none; /* Brak obramowania */
+  padding: 10px 20px; /* Wewnętrzne odstępy */
+  text-align: center; /* Wyśrodkowanie tekstu */
+  text-decoration: none; /* Brak podkreślenia */
+  display: inline-block; /* Wyświetlanie jako element blokowy */
+  font-size: 16px; /* Rozmiar czcionki */
+  margin: 10px 2px; /* Marginesy */
+  cursor: pointer; /* Kursor wskazujący na możliwość kliknięcia */
+  border-radius: 12px; /* Zaokrąglone rogi */
+  transition: background-color 0.3s, transform 0.3s; /* Płynne przejścia */
+}
+
+.add-to-cart:hover {
+  background-color: #45a049; /* Ciemniejszy zielony kolor przy najechaniu */
+  transform: scale(1.05); /* Powiększenie przy najechaniu */
+}
+
+.add-to-cart:active {
+  background-color: #3e8e41; /* Jeszcze ciemniejszy zielony kolor przy kliknięciu */
+  transform: scale(1); /* Powrót do normalnego rozmiaru przy kliknięciu */
 }
 
 /******************Logowanie i Rejestracja************/
@@ -550,6 +568,7 @@ body {
   margin: 5px 0;
 }
 
+.decrease-from-cart,
 .add-more,
 .remove-from-cart {
   background-color: #5cb85c;
@@ -559,16 +578,26 @@ body {
   margin: 5px;
   cursor: pointer;
   border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+
+.decrease-from-cart{
+  background-color: #e0251e;
 }
 
 .remove-from-cart {
-  background-color: #d9534f;
+  background-color: #db7912;
 }
 
+.decrease-from-cart:hover,
 .add-more:hover,
 .remove-from-cart:hover {
   opacity: 0.9;
+  transform: scale(1.2);
 }
+
+
+
 
 .cart-summary {
   border-top: 2px solid #ddd;

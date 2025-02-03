@@ -1,37 +1,26 @@
-const mysql = require("mysql");
+const mongoose = require('mongoose');
 
-// Funkcja tworząca połączenie z bazą danych
-function createDbConnection() {
-  return mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "ksiegarnia",
-  });
-}
+const connectDB = async () => {
+  try {
+    await mongoose.connect('mongodb://localhost:27017/ksiegarnia', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.error('Błąd połączenia z bazą danych: ' + err);
+    process.exit(1);
+  }
+};
 
 // Funkcja wykonująca zapytanie do bazy danych
-function queryDatabase(sql, params = []) {
-  const con = createDbConnection();
-
-  return new Promise((resolve, reject) => {
-    con.connect((err) => {
-      if (err) {
-        reject("Błąd połączenia z bazą danych: " + err);
-        return;
-      }
-
-      con.query(sql, params, (err, results) => {
-        if (err) {
-          reject("Błąd zapytania: " + err);
-          return;
-        }
-
-        resolve(results);
-        con.end();
-      });
-    });
-  });
+async function queryDatabase(model, query, params = {}) {
+  try {
+    const results = await model.find(query, params);
+    return results;
+  } catch (err) {
+    throw new Error('Błąd zapytania: ' + err);
+  }
 }
 
-module.exports = { queryDatabase };
+module.exports = { connectDB, queryDatabase };
